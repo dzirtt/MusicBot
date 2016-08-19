@@ -1,30 +1,33 @@
-FROM ubuntu:14.04
+FROM alpine:latest
 
 MAINTAINER Sidesplitter, https://github.com/SexualRhinoceros/MusicBot
+MAINTAINER dzirtt, https://github.com/dzirtt/musicBot_alpine 
 
-#Install dependencies
-RUN sudo apt-get update \
-    && sudo apt-get install software-properties-common -y \
-    && sudo add-apt-repository ppa:fkrull/deadsnakes -y \
-    && sudo add-apt-repository ppa:mc3man/trusty-media -y \
-    && sudo apt-get update -y \
-    && sudo apt-get install build-essential unzip -y \
-    && sudo apt-get install python3.5 python3.5-dev -y \
-    && sudo apt-get install ffmpeg -y \
-    && sudo apt-get install libopus-dev -y \
-    && sudo apt-get install libffi-dev -y
+##Install dependencies
+#donwload, unpack
+RUN apk add --update wget unzip libcurl git
+#musicbot deps
+RUN apk add python3 python3-dev ffmpeg opus-dev
+#compilation
+RUN apk add gcc make libc-dev binutils libffi-dev
 
 #Install Pip
-RUN sudo apt-get install wget \
-    && wget https://bootstrap.pypa.io/get-pip.py \
-    && sudo python3.5 get-pip.py
-
-#Add musicBot
-ADD . /musicBot
+RUN wget https://bootstrap.pypa.io/get-pip.py \
+    && python3.5 get-pip.py
+    
+#Install PIP dependencies from requirements.txt
+RUN pip install discord.py[voice] \
+        youtube_dl \
+        pip \ 
+        vk
+                            
+#download musicBot        
+RUN git clone -b master --single-branch https://github.com/dzirtt/MusicBot.git /musicBot                            
 WORKDIR /musicBot
 
-#Install PIP dependencies
-RUN sudo pip install -r requirements.txt
+#cleanup
+RUN apk del gcc make git && \
+        rm -rf /var/lib/apt/lists/*
 
 #Add volume for configuration
 VOLUME /musicBot/config
