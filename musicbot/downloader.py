@@ -32,7 +32,13 @@ youtube_dl.utils.bug_reports_message = lambda: ''
 
 '''
 
-class Downloader:
+
+
+
+class DownloaderYou:
+    
+    proccedDomains = { "youtube.com", "youtu.be" }
+    
     def __init__(self, download_folder=None):
         self.thread_pool = ThreadPoolExecutor(max_workers=2)
         self.unsafe_ytdl = youtube_dl.YoutubeDL(ytdl_format_options)

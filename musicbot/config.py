@@ -78,6 +78,12 @@ class Config:
         self.delete_messages  = config.getboolean('MusicBot', 'DeleteMessages', fallback=ConfigDefaults.delete_messages)
         self.delete_invoking = config.getboolean('MusicBot', 'DeleteInvoking', fallback=ConfigDefaults.delete_invoking)
         self.debug_mode = config.getboolean('MusicBot', 'DebugMode', fallback=ConfigDefaults.debug_mode)
+        
+        #vkApi
+        self.VkAppid = config.get('vkApi', 'VkAppid', fallback=ConfigDefaults.VkAppid)
+        self.Vkuser = config.get('vkApi', 'Vkuser', fallback=ConfigDefaults.Vkuser)
+        self.Vkpassword = config.get('vkApi', 'Vkpassword', fallback=ConfigDefaults.Vkpassword)
+        self.Vktoken = config.get('vkApi', 'Vktoken', fallback=ConfigDefaults.Vktoken)
 
         self.blacklist_file = config.get('Files', 'BlacklistFile', fallback=ConfigDefaults.blacklist_file)
         self.auto_playlist_file = config.get('Files', 'AutoPlaylistFile', fallback=ConfigDefaults.auto_playlist_file)
@@ -187,7 +193,12 @@ class ConfigDefaults:
     delete_messages = True
     delete_invoking = False
     debug_mode = False
-
+    
+    VkAppid = None
+    Vkuser = None
+    Vkpassword = None
+    Vktoken = None
+    
     options_file = 'config/options.ini'
     blacklist_file = 'config/blacklist.txt'
     auto_playlist_file = 'config/autoplaylist.txt' # this will change when I add playlists

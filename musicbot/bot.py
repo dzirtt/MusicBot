@@ -29,7 +29,8 @@ from musicbot.permissions import Permissions, PermissionsDefaults
 from musicbot.utils import load_file, write_file, sane_round_int
 
 from . import exceptions
-from . import downloader
+#from . import downloader
+from .downloader_decorator import Downloader 
 from .opus_loader import load_opus_lib
 from .constants import VERSION as BOTVERSION
 from .constants import DISCORD_MSG_CHAR_LIMIT, AUDIO_CACHE_PATH
@@ -77,7 +78,7 @@ class MusicBot(discord.Client):
 
         self.blacklist = set(load_file(self.config.blacklist_file))
         self.autoplaylist = load_file(self.config.auto_playlist_file)
-        self.downloader = downloader.Downloader(download_folder='audio_cache')
+        self.downloader = Downloader(config = self.config, folder = 'audio_cache')
 
         self.exit_signal = None
         self.init_ok = False
@@ -249,7 +250,7 @@ class MusicBot(discord.Client):
             voice_client = VoiceClient(**kwargs)
             self.the_voice_clients[server.id] = voice_client
 
-            retries = 3
+            retries = 1
             for x in range(retries):
                 try:
                     print("Attempting connection...")
@@ -845,9 +846,15 @@ class MusicBot(discord.Client):
     async def cmd_play(self, player, channel, author, permissions, leftover_args, song_url):
         """
         Usage:
-            {command_prefix}play song_link
+            {command_prefix}play [service] song_link
             {command_prefix}play text to search for
 
+        [service]: 
+            Searches service for a video
+            - service: any one of the following services:
+                - youtube (yt) (default if unspecified)
+                - vkontakte (vk)
+        
         Adds the song to the playlist.  If a link is not provided, the first
         result from a youtube search is added to the queue.
         """
@@ -870,12 +877,12 @@ class MusicBot(discord.Client):
             raise exceptions.CommandError(e, expire_in=30)
 
         if not info:
-            raise exceptions.CommandError("That video cannot be played.", expire_in=30)
+            raise exceptions.CommandError("That video cannot be played. Try to change you request", expire_in=30)
 
         # abstract the search handling away from the user
         # our ytdl options allow us to use search strings as input urls
         if info.get('url', '').startswith('ytsearch'):
-            # print("[Command:play] Searching for \"%s\"" % song_url)
+            #print("[Command:play] Searching for \"%s\"" % song_url)
             info = await self.downloader.extract_info(
                 player.playlist.loop,
                 song_url,
@@ -1138,6 +1145,7 @@ class MusicBot(discord.Client):
             - youtube (yt) (default if unspecified)
             - soundcloud (sc)
             - yahoo (yh)
+            - vkontakte (vk)
         - number: return a number of video results and waits for user to choose one
           - defaults to 1 if unspecified
           - note: If your search query starts with a number,
@@ -1214,7 +1222,7 @@ class MusicBot(discord.Client):
             await self.safe_delete_message(search_msg)
 
         if not info:
-            return Response("No videos found.", delete_after=30)
+            return Response("No videos found. Try to change you request", delete_after=30)
 
         def check(m):
             return (
