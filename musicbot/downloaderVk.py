@@ -66,7 +66,8 @@ class DownloaderVk:
             
             print("[Download] Started:", urlStrip)
 
-            result = await fileDownloader.downloadByUrlAndSaveToFile(responce["url"], filePath)
+            result = await loop.run_in_executor(self.thread_pool, functools.partial(fileDownloader.downloadByUrlAndSaveToFile, responce["url"], filePath))
+            #result = await fileDownloader.downloadByUrlAndSaveToFile(responce["url"], filePath)
             
             log.info("file save to:{0} \nsize:{1} byte".format(filePath, result))
             

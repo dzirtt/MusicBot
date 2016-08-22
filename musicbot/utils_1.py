@@ -7,14 +7,14 @@ import urllib.request
 
 class fileDownloader:
 
-    async def downloadByUrl(url):
+    def downloadByUrl(url):
         inputStream = urllib.request.urlopen(url)
         data = inputStream.read()
         
         return data
     
-    async def downloadByUrlAndSaveToFile(url,filePath):
-        data = await fileDownloader.downloadByUrl(url)
+    def downloadByUrlAndSaveToFile(url,filePath):
+        data = fileDownloader.downloadByUrl(url)
         
         if not data:
             return -1
