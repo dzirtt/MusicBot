@@ -44,11 +44,7 @@ class DownloaderVk:
         return self
 
     async def extract_info(self, loop, *args, on_error=None, retry_on_error=False, **kwargs):
-        
-        
-        print(args)
         responce = None
-        
         responce = self.__audioGetById(' '.join(args))
 
         if not responce:
