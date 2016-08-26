@@ -59,9 +59,11 @@ class DownloaderVk:
             return None
         
         responce = self.reconstructResponce(responce)      
-        
         filePath = self.__constructFilenameFromUrl(responce["url"])
-        if kwargs.get("download"):
+        
+        if  os.path.isfile(filePath):
+              print("[Cached] Use file from cache:", filePath)
+        elif kwargs.get("download"):
             urlStrip = responce["url"].split("?")[0]
             
             print("[Download] Started:", urlStrip)
@@ -75,7 +77,6 @@ class DownloaderVk:
                 return None 
             
             print("[Download] Complete:", urlStrip)
-
             
         return responce
     
