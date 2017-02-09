@@ -1,5 +1,6 @@
 FROM alpine:latest
 
+#update 10-02-17
 MAINTAINER Sidesplitter, https://github.com/SexualRhinoceros/MusicBot
 MAINTAINER dzirtt, https://github.com/dzirtt/musicBot_alpine 
 
